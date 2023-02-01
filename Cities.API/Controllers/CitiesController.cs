@@ -14,11 +14,23 @@ namespace Cities.API.Controllers
         // URI ends with "api/cities" since that was placed in Route param
         [HttpGet]
         // Want to return everything in JSON format 
-        public JsonResult GetCities()
-        {
-            // create constructor that returns JSON-ified data
+        // Create constructor that returns JSON-ified data
+        public JsonResult GetCities() {
             return new JsonResult(CitiesDataStore.Current.Cities);
              
+        }
+
+        [HttpGet("id/{id}")]
+        public JsonResult GetCityById(int id) {
+
+            return new JsonResult(CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == id));
+
+        }
+
+        // This didn't work... 
+        [HttpGet("cityname/{cityName}")]
+        public JsonResult GetCityByName(string cityName) {
+            return new JsonResult(CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Name == cityName));
         }
 
 
