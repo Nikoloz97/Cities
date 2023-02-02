@@ -12,7 +12,14 @@ namespace Cities.API
             // Add services to the container ("built-in dependency injection container")
             // I.e. inject them wherever needed in our code
             // Adding view as well = not necessary for APIs (the view = in JSON format)
-            builder.Services.AddControllers();
+            builder.Services.AddControllers(options =>
+            {
+                // Sends out error message if user's requested API return format = not supported (406 Not Acceptable code) 
+                options.ReturnHttpNotAcceptable = true;
+
+                // Allows XML format to be supported 
+            }).AddXmlDataContractSerializerFormatters();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
