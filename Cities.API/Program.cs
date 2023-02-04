@@ -19,8 +19,9 @@ namespace Cities.API
                 // Sends out error message if user's requested API return format = not supported (406 Not Acceptable code) 
                 options.ReturnHttpNotAcceptable = true;
 
-                // Allows XML format to be supported 
-            }).AddXmlDataContractSerializerFormatters();
+                // Left = Allows patch requests to work 
+                // Right = Allows XML format to be supported 
+            }).AddNewtonsoftJson().AddXmlDataContractSerializerFormatters();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();

@@ -30,10 +30,10 @@ namespace Cities.API.Controllers
         {
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
 
-            if (city == null) { return NotFound();}
+            if (city == null) { return NotFound(); }
 
             var pointOfInterest = city.PointsOfInterest.FirstOrDefault(interest => interest.Id == pointOfInterestId);
-            
+
 
             if (pointOfInterest == null) { return NotFound(); }
 
@@ -70,7 +70,7 @@ namespace Cities.API.Controllers
             // Param 3 = new PointOfInterest object
             // Return 200 status code if route was made for this new PointOfInterest object
             return CreatedAtRoute("GetPointOfInterest",
-                new 
+                new
                 {
                     cityId = cityID,
                     pointOfInterestId = finalPointOfInterest.Id
@@ -80,11 +80,11 @@ namespace Cities.API.Controllers
         }
 
         [HttpPut("{pointofinterestid}")]
-        public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestDto pointOfInterest) 
+        public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestDto pointOfInterest)
         {
             // Get corresponding city
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
-            if (city == null) { return NotFound();}
+            if (city == null) { return NotFound(); }
 
             // From city, find corresponding POI
             var POI = city.PointsOfInterest.FirstOrDefault(POI => POI.Id == pointOfInterestId);
@@ -96,7 +96,7 @@ namespace Cities.API.Controllers
 
             // Equivalent of returning a null (since put requests don't return anything)
             return NoContent();
-            
+
         }
 
         // Patch = "partial update" of a resource
@@ -104,7 +104,7 @@ namespace Cities.API.Controllers
         public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDto> patchDocument)
         {
             var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
-            if (city == null) { return NotFound();}
+            if (city == null) { return NotFound(); }
 
             var POI = city.PointsOfInterest.FirstOrDefault(POI => POI.Id == pointOfInterestId);
             if (POI == null) { return NotFound(); }
@@ -117,6 +117,7 @@ namespace Cities.API.Controllers
             };
 
             // "Patch" the POI_Patch object
+            // Allows you to manipulate objects (adding/removing properties) during runtime
             // ModelState = check for errors 
             patchDocument.ApplyTo(POI_Patch, ModelState);
 
@@ -137,9 +138,24 @@ namespace Cities.API.Controllers
             POI.Name = POI_Patch.Name;
             POI.Description = POI_Patch.Description;
 
-            return NoContent() ;
+            return NoContent();
 
         }
+
+        [HttpDelete("{pointOfInterestId}")]
+        public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            if (city == null) { return NotFound();}
+
+            var POI = city.PointsOfInterest.FirstOrDefault(POI => POI.Id == pointOfInterestId);
+            if (POI == null) { return NotFound(); }
+
+            city.PointsOfInterest.Remove(POI);
+            return NoContent();
+
+        }
+
 
     }
 }
