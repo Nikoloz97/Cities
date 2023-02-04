@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Cities.API.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace Cities.API.Controllers
 {
@@ -93,9 +94,51 @@ namespace Cities.API.Controllers
             POI.Name = pointOfInterest.Name;
             POI.Description = pointOfInterest.Description;
 
-            // Equivalent of returning a null
+            // Equivalent of returning a null (since put requests don't return anything)
             return NoContent();
             
+        }
+
+        // Patch = "partial update" of a resource
+        [HttpPatch("{pointofinterestid}")]
+        public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDto> patchDocument)
+        {
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            if (city == null) { return NotFound();}
+
+            var POI = city.PointsOfInterest.FirstOrDefault(POI => POI.Id == pointOfInterestId);
+            if (POI == null) { return NotFound(); }
+
+            // Map POI to POI_ForUpdate
+            var POI_Patch = new PointOfInterestForUpdateDto()
+            {
+                Name = POI.Name,
+                Description = POI.Description,
+            };
+
+            // "Patch" the POI_Patch object
+            // ModelState = check for errors 
+            patchDocument.ApplyTo(POI_Patch, ModelState);
+
+            // Check if POI_Patch valid before applying patchDoc
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Check if POI_Patch valid after applying patchDoc
+            if (!TryValidateModel(POI_Patch))
+            {
+                return BadRequest(ModelState);
+
+            }
+
+            // Map patched POI -> regular POI
+            POI.Name = POI_Patch.Name;
+            POI.Description = POI_Patch.Description;
+
+            return NoContent() ;
+
         }
 
     }

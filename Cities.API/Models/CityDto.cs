@@ -15,7 +15,9 @@
             }
         }
 
-        // Initialize collections to empty (rather than null)...
+
+        // Initialize POI collection to empty list (rather than null)...
         public ICollection<PointOfInterestDto> PointsOfInterest { get; set; } = new List<PointOfInterestDto>();
+
     }
 }
