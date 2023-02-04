@@ -43,6 +43,7 @@ namespace Cities.API.Controllers
             var bytes = System.IO.File.ReadAllBytes(pathToFile);
 
             // make sure it's in the correct file type (doc, excel, pdf)
+            // I.e. this tells operating system which "view" to use 
             return File(bytes, contentType, Path.GetFileName(pathToFile));
         }
     }
