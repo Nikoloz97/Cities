@@ -28,6 +28,8 @@ namespace Cities.API.Controllers
 
             if (city == null)
             {
+                // Documenting message that city wasn't found
+                _logger.LogInformation($"City with id {cityId} wasn't found when accessing POI.");
                 return NotFound();
             }
             return Ok(city.PointsOfInterest);

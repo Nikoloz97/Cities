@@ -11,6 +11,13 @@ namespace Cities.API
             // ** 1. Web application = built (using WebApplicationBuilder)
             var builder = WebApplication.CreateBuilder(args);
 
+            // CreateBuilder = creates a default logging system, which can be changed
+            // ClearProviders = clears all logging information
+            builder.Logging.ClearProviders();
+
+            // This adds all logging information back in
+            builder.Logging.AddConsole();
+
             // Add services to the container ("built-in dependency injection container")
             // I.e. inject them wherever needed in our code
             // Adding view as well = not necessary for APIs (the view = in JSON format)
