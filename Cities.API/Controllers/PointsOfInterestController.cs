@@ -10,6 +10,15 @@ namespace Cities.API.Controllers
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
+        // Create a property out of the dependency
+        private readonly ILogger<PointsOfInterestController> _logger;
+
+        // Injecting ILogger (dependency) into POI controller (container)
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        {
+            // Right side of ?? = "null check"
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>> GetPointsOfInterest(int cityId)
