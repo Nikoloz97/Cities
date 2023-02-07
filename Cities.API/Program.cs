@@ -1,3 +1,4 @@
+using Cities.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
 // Downloaded Serilog as nuget package (allows us to log information to a file; useful for production env)
 using Serilog;
@@ -43,6 +44,16 @@ namespace Cities.API
             builder.Services.AddSwaggerGen();
             // Allows to inject "FileExtensionContentTypeProvider" in other files of code
             builder.Services.AddSingleton<FileExtensionContentTypeProvider>();
+
+            // Adding a lifetime service... 
+            // Transient = created each time they're requested (for lightweight stuff)
+            // Scoped = created once per request
+            // Singleton = created first time they're created
+            // Allows for dependency injection (see controller)
+
+            builder.Services.AddTransient<LocalMailService>();
+
+
 
             var app = builder.Build();
 

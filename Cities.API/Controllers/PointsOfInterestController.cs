@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Cities.API.Models;
 using Microsoft.AspNetCore.JsonPatch;
+using Cities.API.Services;
 
 namespace Cities.API.Controllers
 {
@@ -12,12 +13,14 @@ namespace Cities.API.Controllers
     {
         // Create a property out of the dependency
         private readonly ILogger<PointsOfInterestController> _logger;
+        private readonly LocalMailService _mailService;
 
-        // Injecting ILogger (dependency) into POI controller (container)
-        public PointsOfInterestController(ILogger<PointsOfInterestController> logger)
+        // Injecting ILogger and mailservice (dependencies) into POI controller (container)
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, LocalMailService mailService)
         {
-            // Right side of ?? = "null check"
-            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+           
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger)); //the throw = "null check"
+            _mailService = mailService  ?? throw new ArgumentNullException(nameof(mailService));
         }
 
         [HttpGet]
@@ -177,6 +180,7 @@ namespace Cities.API.Controllers
             if (POI == null) { return NotFound(); }
 
             city.PointsOfInterest.Remove(POI);
+            _mailService.Send("POI Deleted", $"POI {POI.Name} with id {POI.Id} was deleted");
             return NoContent();
 
         }
