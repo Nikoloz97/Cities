@@ -1,6 +1,6 @@
 ﻿namespace Cities.API.Services
 {
-    public class LocalMailService
+    public class LocalMailService : IMailService
     {
         // Dummy property information
         private string _mailTo = "admin@mycompany.com";

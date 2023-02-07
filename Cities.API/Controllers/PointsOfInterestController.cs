@@ -11,16 +11,19 @@ namespace Cities.API.Controllers
     [ApiController]
     public class PointsOfInterestController : ControllerBase
     {
-        // Create a property out of the dependency
+        // Store depedency in a property
         private readonly ILogger<PointsOfInterestController> _logger;
-        private readonly LocalMailService _mailService;
+        private readonly IMailService _mailService;
+        private readonly CitiesDataStore _citiesDataStore;
 
-        // Injecting ILogger and mailservice (dependencies) into POI controller (container)
-        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, LocalMailService mailService)
+        // Injecting ILogger, mailservice (dependencies) into POI controller
+        // Dependencies are all "registered" in the services container (see program) 
+        public PointsOfInterestController(ILogger<PointsOfInterestController> logger, IMailService mailService, CitiesDataStore citiesDataStore)
         {
            
             _logger = logger ?? throw new ArgumentNullException(nameof(logger)); //the throw = "null check"
             _mailService = mailService  ?? throw new ArgumentNullException(nameof(mailService));
+            _citiesDataStore = citiesDataStore ?? throw new ArgumentNullException(nameof(citiesDataStore));
         }
 
         [HttpGet]
@@ -29,7 +32,7 @@ namespace Cities.API.Controllers
             try
             {
 
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
 
             if (city == null)
             {
@@ -56,7 +59,7 @@ namespace Cities.API.Controllers
         [HttpGet("{pointOfInterestId}", Name = "GetPointOfInterest")]
         public ActionResult<PointOfInterestDto> GetPointOfInterest(int cityId, int pointOfInterestId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
 
             if (city == null) { return NotFound(); }
 

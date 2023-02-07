@@ -4,11 +4,13 @@ namespace Cities.API
 {
     public class CitiesDataStore
     {
-        public List<CityDto> Cities { get; set; }   
+        public List<CityDto> Cities { get; set; }
 
-        // "Current" property = returns instance of the CitiesDataStore (i.e. calls on the constructor) 
+        // "Current" property = returns instance of the CitiesDataStore (i.e. calls on the constructor)
         // Static, so CitiesDataStore doesn't need to be instantiated to access this property
-        public static CitiesDataStore Current { get; } = new CitiesDataStore();
+        // Static instance of a class = aka "singleton"
+
+        // public static CitiesDataStore Current { get; } = new CitiesDataStore();
 
 
         // Constructor = contains "dummy data"

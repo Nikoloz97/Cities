@@ -50,9 +50,15 @@ namespace Cities.API
             // Scoped = created once per request
             // Singleton = created first time they're created
             // Allows for dependency injection (see controller)
+            // # = compiler directives (from dropdown, debug -> release = activates else statement)
+            // i.e. this code = allows us to selectively run "LocalMailService" in debug mode, and "CloudMailService" in release mode
+            #if DEBUG
+            builder.Services.AddTransient<IMailService, LocalMailService>();
+            #else
+            builder.Services.AddTransient<IMailService, CloudMailService>();
+            #endif
 
-            builder.Services.AddTransient<LocalMailService>();
-
+            builder.Services.AddSingleton<CitiesDataStore>();
 
 
             var app = builder.Build();
