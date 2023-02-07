@@ -23,16 +23,30 @@ namespace Cities.API.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<PointOfInterestDto>> GetPointsOfInterest(int cityId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            try
+            {
 
+            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
 
             if (city == null)
             {
-                // Documenting message that city wasn't found
+                // Documenting message that city wasn't found (puts it into console)
                 _logger.LogInformation($"City with id {cityId} wasn't found when accessing POI.");
                 return NotFound();
             }
             return Ok(city.PointsOfInterest);
+
+            }
+            catch (Exception ex)
+            {
+                // Exceptions = always logged as "critical" level
+                _logger.LogCritical($"Exception while getting POI for city with cityId {cityId}.", ex);
+                // Unhandled exceptions = return 500 internal server error
+                // Since we've caught it, must return this error manually (to the console)
+                return StatusCode(500, "A problem happened while handling your request.");
+            }
+
+
         }
 
         // We can name this route (second parameter)  

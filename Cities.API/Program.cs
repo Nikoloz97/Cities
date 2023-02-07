@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.StaticFiles;
+// Downloaded Serilog as nuget package (allows us to log information to a file; useful for production env)
+using Serilog;
 
 namespace Cities.API
 {
@@ -8,15 +10,21 @@ namespace Cities.API
         // Main = configures + runs application
         public static void Main(string[] args)
         {
+            // Creating a logger that logs to a file path
+            Log.Logger = new LoggerConfiguration()
+                // Only log for debug level and higher
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                // This creates a new logging file each day
+                .WriteTo.File("logs/cityinfo.txt", rollingInterval: RollingInterval.Day)
+                .CreateLogger();
+
+
             // ** 1. Web application = built (using WebApplicationBuilder)
             var builder = WebApplication.CreateBuilder(args);
 
-            // CreateBuilder = creates a default logging system, which can be changed
-            // ClearProviders = clears all logging information
-            builder.Logging.ClearProviders();
-
-            // This adds all logging information back in
-            builder.Logging.AddConsole();
+            // Allows us to use Serilog 
+            builder.Host.UseSerilog();
 
             // Add services to the container ("built-in dependency injection container")
             // I.e. inject them wherever needed in our code
