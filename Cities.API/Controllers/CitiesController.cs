@@ -12,6 +12,14 @@ namespace Cities.API.Controllers
     // ControllerBase = contains helper methods in setting up controller
     public class CitiesController : ControllerBase
     {
+        private readonly CitiesDataStore _citiesDataStore;
+
+        // Dependency injected cities data store
+        public CitiesController(CitiesDataStore citiesDataStore)
+        {
+            _citiesDataStore = citiesDataStore;
+
+        }
         // URI ends with "api/cities" since that was placed in Route param
         [HttpGet]
         // Want to return everything in JSON format 
@@ -19,7 +27,7 @@ namespace Cities.API.Controllers
         public ActionResult<IEnumerable<CityDto>> GetCities() {
 
 
-            return Ok(CitiesDataStore.Current.Cities);
+            return Ok(_citiesDataStore.Cities);
 
             // No "Not Found" (empty collection = still a valid response) 
              
@@ -29,7 +37,7 @@ namespace Cities.API.Controllers
         // ActionResult = imported from ControllerBase ("action" = Http get/put/post)
         public ActionResult<CityDto> GetCityById(int id) {
 
-            var cityReturned = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == id);
+            var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == id);
 
             if (cityReturned == null)
             {
@@ -44,7 +52,7 @@ namespace Cities.API.Controllers
         [HttpGet("cityname/{cityName}")]
         public ActionResult<CityDto> GetCityByName(string cityName) {
 
-            var cityReturned = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Name == cityName);
+            var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Name == cityName);
 
             if (cityReturned == null)
             {

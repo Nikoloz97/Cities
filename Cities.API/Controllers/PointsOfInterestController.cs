@@ -78,12 +78,12 @@ namespace Cities.API.Controllers
         public ActionResult<PointOfInterestDto> CreatePointOfInterest(int cityID, [FromBody] PointOfInterestForCreationDto pointOfInterest)
         {
             // Find matching cityId 
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id.Equals(cityID));
+            var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id.Equals(cityID));
 
             if (city == null) { return NotFound(); }
 
             // Mapping out each city's POI object aray, grab the max Id 
-            var maxPOI_Id = CitiesDataStore.Current.Cities.SelectMany(city => city.PointsOfInterest).Max(city => city.Id);
+            var maxPOI_Id = _citiesDataStore.Cities.SelectMany(city => city.PointsOfInterest).Max(city => city.Id);
 
             // Map POI creation dto -> POI dto 
             // "Mapping" = transferring info of one object (POI_creation) -> to another object (POI)
@@ -114,7 +114,7 @@ namespace Cities.API.Controllers
         public ActionResult UpdatePointOfInterest(int cityId, int pointOfInterestId, PointOfInterestDto pointOfInterest)
         {
             // Get corresponding city
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
             if (city == null) { return NotFound(); }
 
             // From city, find corresponding POI
@@ -134,7 +134,7 @@ namespace Cities.API.Controllers
         [HttpPatch("{pointofinterestid}")]
         public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDto> patchDocument)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
             if (city == null) { return NotFound(); }
 
             var POI = city.PointsOfInterest.FirstOrDefault(POI => POI.Id == pointOfInterestId);
@@ -176,7 +176,7 @@ namespace Cities.API.Controllers
         [HttpDelete("{pointOfInterestId}")]
         public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
-            var city = CitiesDataStore.Current.Cities.FirstOrDefault(city => city.Id == cityId);
+            var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
             if (city == null) { return NotFound();}
 
             var POI = city.PointsOfInterest.FirstOrDefault(POI => POI.Id == pointOfInterestId);
