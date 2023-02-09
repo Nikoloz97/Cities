@@ -14,7 +14,7 @@ namespace Cities.API
         // public static CitiesDataStore Current { get; } = new CitiesDataStore();
 
 
-        // Constructor = contains "dummy data"
+        // Constructor = creates mock city data + assigns to class attribute
         public CitiesDataStore() 
         {
             Cities = new List<CityDto>()
