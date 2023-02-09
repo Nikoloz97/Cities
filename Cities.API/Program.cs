@@ -1,5 +1,7 @@
+using Cities.API.DBContexts;
 using Cities.API.Services;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.EntityFrameworkCore;
 // Downloaded Serilog as nuget package (allows us to log information to a file; useful for production env)
 using Serilog;
 
@@ -59,6 +61,10 @@ namespace Cities.API
             #endif
 
             builder.Services.AddSingleton<CitiesDataStore>();
+
+            // "Registers" CityInfoContext as a DBcontext, so that dependency injection can be applied to it
+            builder.Services.AddDbContext<CityInfoContext>(
+                dbContextOptions => dbContextOptions.UseSqlite("Data Source=CityInfo.db"));
 
 
             var app = builder.Build();
