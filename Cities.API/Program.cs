@@ -64,8 +64,9 @@ namespace Cities.API
 
             // "Registers" CityInfoContext as a DBcontext, so that dependency injection can be applied to it
             builder.Services.AddDbContext<CityInfoContext>(
-                dbContextOptions => dbContextOptions.UseSqlite("Data Source=CityInfo.db"));
-
+                // For the parameter, see appsettings.Development.json
+                dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"]));
+            
 
             var app = builder.Build();
 
