@@ -6,7 +6,7 @@ namespace Cities.API.Services
     {
         // Async function = allows for app scalability
         Task<IEnumerable<City>> GetCitiesAsync();
-        Task<City?> GetCityAsync(int cityId);
+        Task<City?> GetCityAsync(int cityId, bool includePOI);
         Task<IEnumerable<PointofInterest>> GetPointsOfInterestForCityAsync(int cityId);
         Task<PointOfInterest?> GetPointOfInterestForCityAsync(int cityId, int pointOfInterestId);
 
