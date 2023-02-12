@@ -66,7 +66,9 @@ namespace Cities.API
             builder.Services.AddDbContext<CityInfoContext>(
                 // For the parameter, see appsettings.Development.json
                 dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"]));
-            
+
+
+            builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
             var app = builder.Build();
 

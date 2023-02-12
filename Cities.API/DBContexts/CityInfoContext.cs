@@ -10,7 +10,7 @@ namespace Cities.API.DBContexts
         public DbSet<City> Cities { get; set; } = null!;
 
         // DbContext doesn't allow for nulls, so include "null forgiver" (null!)
-        public DbSet<PointOfInterest> PointOfInterest { get; set; } = null!;
+        public DbSet<PointOfInterest> PointsOfInterest { get; set; } = null!;
 
         // Constructor purpose = provide options at moment DBContext is registered 
         // See Services.AddDbContext (program.cs) 
@@ -19,7 +19,7 @@ namespace Cities.API.DBContexts
 
         }
 
-        // Gain access to modelbuilder (used to manually construct models)
+        // Gain access to modelbuilder (purpose = manually construct models)
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
