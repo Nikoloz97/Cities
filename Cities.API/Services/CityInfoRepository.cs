@@ -39,10 +39,10 @@ namespace Cities.API.Services
             return await this.context.PointsOfInterest.Where(p => p.CityId == cityId && p.Id == pointOfInterestId).FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<PointofInterest>> GetPointsOfInterestForCityAsync(int cityId)
+        public async Task<IEnumerable<PointOfInterest>> GetPointsOfInterestForCityAsync(int cityId)
         {
             // ToListAsync = returns list 
-            return (IEnumerable<PointofInterest>)await this.context.PointsOfInterest.Where(p => p.CityId == cityId).ToListAsync();
+            return await this.context.PointsOfInterest.Where(p => p.CityId == cityId).ToListAsync();
         }
     }
 }

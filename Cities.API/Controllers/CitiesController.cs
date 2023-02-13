@@ -1,4 +1,5 @@
 ﻿using Cities.API.Models;
+using Cities.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cities.API.Controllers
@@ -12,12 +13,13 @@ namespace Cities.API.Controllers
     // ControllerBase = contains helper methods in setting up controller
     public class CitiesController : ControllerBase
     {
-        private readonly CitiesDataStore _citiesDataStore;
+        private readonly ICityInfoRepository _cityInfoRespository;
 
-        // Dependency injected cities data store
-        public CitiesController(CitiesDataStore citiesDataStore)
+        // Dependency injected repository
+        public CitiesController(ICityInfoRepository cityInfoRepository)
         {
-            _citiesDataStore = citiesDataStore;
+           
+            _cityInfoRespository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
 
         }
         // URI ends with "api/cities" since that was placed in Route param
@@ -26,8 +28,10 @@ namespace Cities.API.Controllers
         // Create constructor that returns JSON-ified data
         public ActionResult<IEnumerable<CityDto>> GetCities() {
 
+            var cityEntities = _cityInfoRespository.GetCitiesAsync();
 
-            return Ok(_citiesDataStore.Cities);
+
+            // return Ok(_citiesDataStore.Cities);
 
             // No "Not Found" (empty collection = still a valid response) 
              

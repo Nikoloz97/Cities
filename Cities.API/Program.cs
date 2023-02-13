@@ -68,6 +68,7 @@ namespace Cities.API
                 dbContextOptions => dbContextOptions.UseSqlite(builder.Configuration["ConnectionStrings:CityInfoDBConnectionString"]));
 
 
+            // For repositories, best lifetime = scoped
             builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
             var app = builder.Build();
