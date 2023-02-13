@@ -26,29 +26,42 @@ namespace Cities.API.Controllers
         [HttpGet]
         // Want to return everything in JSON format 
         // Create constructor that returns JSON-ified data
-        public ActionResult<IEnumerable<CityDto>> GetCities() {
-
-            var cityEntities = _cityInfoRespository.GetCitiesAsync();
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities() {
 
 
-            // return Ok(_citiesDataStore.Cities);
+            //cityEntities = used by repository + context
+            var cityEntities = await _cityInfoRespository.GetCitiesAsync();
 
-            // No "Not Found" (empty collection = still a valid response) 
-             
+            //cityDto = used by API (therfore, need to map city entities -> city Dto)
+            var results = new List<CityWithoutPointsOfInterestDto>();
+            foreach (var cityEntity in cityEntities)
+            {
+                results.Add(new CityWithoutPointsOfInterestDto
+                {
+                    Id = cityEntity.Id,
+                    Name = cityEntity.Name,
+                    Description = cityEntity.Description
+                });
+            }
+
+            return Ok(results);
+
         }
 
         [HttpGet("id/{id}")]
         // ActionResult = imported from ControllerBase ("action" = Http get/put/post)
         public ActionResult<CityDto> GetCityById(int id) {
 
-            var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == id);
+            /*var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == id);
 
             if (cityReturned == null)
             {
                 return NotFound();
             }
 
-            return Ok(cityReturned);
+            return Ok(cityReturned);*/
+
+            return Ok();
 
         }
 
@@ -56,7 +69,9 @@ namespace Cities.API.Controllers
         [HttpGet("cityname/{cityName}")]
         public ActionResult<CityDto> GetCityByName(string cityName) {
 
-            var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Name == cityName);
+            return Ok(cityName);
+
+            /*var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Name == cityName);
 
             if (cityReturned == null)
             {
@@ -64,7 +79,7 @@ namespace Cities.API.Controllers
             }
 
             // Otherwise, return the object with a 200 status code
-            return Ok(cityReturned);
+            return Ok(cityReturned);*/
 
             // If error occurs that is not handled, automatically returns 500 internal server error 
         }

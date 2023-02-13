@@ -71,6 +71,10 @@ namespace Cities.API
             // For repositories, best lifetime = scoped
             builder.Services.AddScoped<ICityInfoRepository, CityInfoRepository>();
 
+
+            // AutoMapper = scans "profiles" (contain mapping configs)
+            builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
             var app = builder.Build();
 
             // ** 2. Configure request pipeline (via adding "middleware")
