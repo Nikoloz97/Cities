@@ -6,15 +6,15 @@ namespace Cities.API
     {
         public List<CityDto> Cities { get; set; }
 
-        // "Current" property = returns instance of the CitiesDataStore (i.e. calls on the constructor)
-        // Static, so CitiesDataStore doesn't need to be instantiated to access this property
+        // "Current" field = returns instance of the CitiesDataStore (i.e. calls on the constructor)
+        // Static, so CitiesDataStore doesn't need to be instantiated to access this field
         // Static instance of a class = aka "singleton"
-        // We got rid of this property (instead, we dependency injected CitiesDataStore in containers (class constructors) that need CitiesDataStore) 
+        // We got rid of this field (instead, we dependency injected CitiesDataStore in containers (class constructors) that need CitiesDataStore) 
 
         // public static CitiesDataStore Current { get; } = new CitiesDataStore();
 
 
-        // Constructor = creates mock city data + assigns to class attribute
+        // Constructor = creates mock city data + assigns to class field
         public CitiesDataStore() 
         {
             Cities = new List<CityDto>()

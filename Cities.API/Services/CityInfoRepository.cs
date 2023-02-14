@@ -1,6 +1,7 @@
 ﻿using Cities.API.DBContexts;
 using Cities.API.Entities;
 using Microsoft.EntityFrameworkCore;
+using SQLitePCL;
 
 namespace Cities.API.Services
 {
@@ -34,6 +35,12 @@ namespace Cities.API.Services
 
         }
 
+        public async Task<bool> CityExistsAsync(int cityId)
+        {
+            // Any = if finds at least one occurance, returns true 
+            return await context.Cities.AnyAsync(c => c.Id == cityId);
+        }
+
         public async Task<PointOfInterest?> GetPointOfInterestForCityAsync(int cityId, int pointOfInterestId)
         {
             return await this.context.PointsOfInterest.Where(p => p.CityId == cityId && p.Id == pointOfInterestId).FirstOrDefaultAsync();
@@ -43,6 +50,24 @@ namespace Cities.API.Services
         {
             // ToListAsync = returns list 
             return await this.context.PointsOfInterest.Where(p => p.CityId == cityId).ToListAsync();
+        }
+
+
+        // Post = not returning anything
+        public async Task AddPointOfInterestForCityAsync(int cityId, PointOfInterest pointOfInterest)
+        {
+            var city = await GetCityAsync(cityId, false);
+            if (city != null)
+            {
+                // Not AddAsync since doesn't go to database (instead, adds it to "object context") 
+                city.PointsOfInterest.Add(pointOfInterest);
+            }
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            // Returns number of changes that have been saved  
+            return (await this.context.SaveChangesAsync() >= 0);
         }
     }
 }
