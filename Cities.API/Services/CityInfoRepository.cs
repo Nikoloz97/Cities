@@ -69,5 +69,10 @@ namespace Cities.API.Services
             // Returns number of changes that have been saved  
             return (await this.context.SaveChangesAsync() >= 0);
         }
+
+        public void DeletePointOfInterestForCity(PointOfInterest pointOfInterest)
+        {
+            this.context.Remove(pointOfInterest);
+        }
     }
 }

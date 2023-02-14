@@ -320,11 +320,33 @@ namespace Cities.API.Controllers
 
         }
 
-        /*
-
+        
+        // No mapping here
         [HttpDelete("{pointOfInterestId}")]
-        public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
+        public async Task<ActionResult> DeletePointOfInterest(int cityId, int pointOfInterestId)
         {
+
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            }
+
+            var PoiEntity = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
+
+            if (PoiEntity == null)
+            {
+                return NotFound();
+            }
+
+            _cityInfoRepository.DeletePointOfInterestForCity(PoiEntity);
+
+            await _cityInfoRepository.SaveChangesAsync();
+
+            _mailService.Send("POI Deleted", $"POI {PoiEntity.Name} with id {PoiEntity.Id} was deleted");
+
+            return NoContent();
+
+/*
             var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
             if (city == null) { return NotFound();}
 
@@ -334,9 +356,10 @@ namespace Cities.API.Controllers
             city.PointsOfInterest.Remove(POI);
             _mailService.Send("POI Deleted", $"POI {POI.Name} with id {POI.Id} was deleted");
             return NoContent();
+*/
 
         }
-*/
+
 
     }
 }
