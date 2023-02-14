@@ -9,12 +9,12 @@ namespace Cities.API.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_PointOfInterest_Cities_CityId",
-                table: "PointOfInterest");
+                name: "FK_PointsOfInterest_Cities_CityId",
+                table: "PointsOfInterest");
 
             migrationBuilder.AlterColumn<int>(
                 name: "CityId",
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 type: "INTEGER",
                 nullable: false,
                 defaultValue: 0,
@@ -38,38 +38,38 @@ namespace Cities.API.Migrations
                 values: new object[] { 3, "The one with that big tower.", "Paris" });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[] { 1, 1, "The most visited urban park in the United States.", "Central Park" });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[] { 2, 1, "A 102-story skyscraper located in Midtown Manhattan.", "Empire State Building" });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[] { 3, 2, "A Gothic style cathedral, conceived by architects Jan and Pieter Appelmans.", "Cathedral" });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[] { 4, 2, "The the finest example of railway architecture in Belgium.", "Antwerp Central Station" });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[] { 5, 3, "A wrought iron lattice tower on the Champ de Mars, named after engineer Gustave Eiffel.", "Eiffel Tower" });
 
             migrationBuilder.InsertData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 columns: new[] { "Id", "CityId", "Description", "Name" },
                 values: new object[] { 6, 3, "The world's largest museum.", "The Louvre" });
 
             migrationBuilder.AddForeignKey(
-                name: "FK_PointOfInterest_Cities_CityId",
-                table: "PointOfInterest",
+                name: "FK_PointsOfInterest_Cities_CityId",
+                table: "PointsOfInterest",
                 column: "CityId",
                 principalTable: "Cities",
                 principalColumn: "Id",
@@ -79,36 +79,36 @@ namespace Cities.API.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_PointOfInterest_Cities_CityId",
-                table: "PointOfInterest");
+                name: "FK_PointsOfInterest_Cities_CityId",
+                table: "PointsOfInterest");
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 1);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 2);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 3);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 4);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 5);
 
             migrationBuilder.DeleteData(
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 keyColumn: "Id",
                 keyValue: 6);
 
@@ -129,15 +129,15 @@ namespace Cities.API.Migrations
 
             migrationBuilder.AlterColumn<int>(
                 name: "CityId",
-                table: "PointOfInterest",
+                table: "PointsOfInterest",
                 type: "INTEGER",
                 nullable: true,
                 oldClrType: typeof(int),
                 oldType: "INTEGER");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_PointOfInterest_Cities_CityId",
-                table: "PointOfInterest",
+                name: "FK_PointsOfInterest_Cities_CityId",
+                table: "PointsOfInterest",
                 column: "CityId",
                 principalTable: "Cities",
                 principalColumn: "Id");

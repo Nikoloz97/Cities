@@ -12,6 +12,7 @@ namespace Cities.API.Profiles
             // Entities.City = "source object"
             // Modesl. CityWithout... = "destination object" 
             CreateMap<Entities.City, Models.CityWithoutPointsOfInterestDto>();
+            CreateMap<Entities.City, Models.CityDto>();
                 
         }
     }

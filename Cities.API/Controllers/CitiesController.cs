@@ -1,4 +1,5 @@
-﻿using Cities.API.Models;
+﻿using AutoMapper;
+using Cities.API.Models;
 using Cities.API.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,13 +14,16 @@ namespace Cities.API.Controllers
     // ControllerBase = contains helper methods in setting up controller
     public class CitiesController : ControllerBase
     {
-        private readonly ICityInfoRepository _cityInfoRespository;
+        private readonly ICityInfoRepository _cityInfoRepository;
+        private readonly IMapper _mapper;
 
-        // Dependency injected repository
-        public CitiesController(ICityInfoRepository cityInfoRepository)
+        // Dependency injected repository (i.e. 1. Created parameter, 2. Mapped parameter to corresponding class field) 
+        public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
         {
            
-            _cityInfoRespository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
+            _cityInfoRepository = cityInfoRepository ?? throw new ArgumentNullException(nameof(cityInfoRepository));
+
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
 
         }
         // URI ends with "api/cities" since that was placed in Route param
@@ -30,42 +34,40 @@ namespace Cities.API.Controllers
 
 
             //cityEntities = used by repository + context
-            var cityEntities = await _cityInfoRespository.GetCitiesAsync();
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync();
 
-            //cityDto = used by API (therfore, need to map city entities -> city Dto)
-            var results = new List<CityWithoutPointsOfInterestDto>();
-            foreach (var cityEntity in cityEntities)
-            {
-                results.Add(new CityWithoutPointsOfInterestDto
-                {
-                    Id = cityEntity.Id,
-                    Name = cityEntity.Name,
-                    Description = cityEntity.Description
-                });
-            }
-
-            return Ok(results);
+            //cityDto = used by API (therfore, use mapper to map: city enitity ("source object") -> city w/out POI Dto ("destination object") 
+            return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));
 
         }
 
         [HttpGet("id/{id}")]
         // ActionResult = imported from ControllerBase ("action" = Http get/put/post)
-        public ActionResult<CityDto> GetCityById(int id) {
+        public async Task<IActionResult> GetCityById(int id, bool includePointsOfInterest = false) {
 
-            /*var cityReturned = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == id);
+            // await keyword = gets result of task (rather than task itself) 
+            var city = await _cityInfoRepository.GetCityAsync(id, includePointsOfInterest);
 
-            if (cityReturned == null)
+            if (city == null)
             {
                 return NotFound();
             }
 
-            return Ok(cityReturned);*/
+            if (includePointsOfInterest)
+            {
+                // Map Entities.City object -> Models.CityDto object
+                return Ok(_mapper.Map<CityDto>(city));
 
-            return Ok();
+            }
+
+            // Map Entities.City -> Models.CityWithoutPointsOfInterestDto object
+            return Ok(_mapper.Map<CityWithoutPointsOfInterestDto>(city)); 
 
         }
 
    
+
+        // I made this all on my own hehe
         [HttpGet("cityname/{cityName}")]
         public ActionResult<CityDto> GetCityByName(string cityName) {
 

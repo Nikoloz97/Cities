@@ -26,7 +26,7 @@ namespace Cities.API.Services
             if (includePOI)
             {
                 // Include POI when getting city 
-                // FirstOrDefaultAsync = executes query 
+                // FirstOrDefaultAsync = "executes query" 
                 return await this.context.Cities.Include(c => c.PointsOfInterest).Where(c => c.Id == cityId).FirstOrDefaultAsync();
             }
 
