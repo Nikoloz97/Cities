@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Cities.API.DBContexts
 {
+    // DbContexts = "bridge between entity classes and the database" 
     // DbContext = class inherited from Entity Framework
     public class CityInfoContext : DbContext
     {
-        // Dbset = creates instances of its entity type (translated to queries in DB) 
+        // Dbset = creates instances of its entity type, City (see Entities.City) 
         public DbSet<City> Cities { get; set; } = null!;
 
         // DbContext doesn't allow for nulls, so include "null forgiver" (null!)

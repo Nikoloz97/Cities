@@ -229,12 +229,56 @@ namespace Cities.API.Controllers
 
         }
 
-        /*
+        
 
-        // Patch = "partial update" of a resource
+        // Patch = "partial update" of a resource (preferred over full updates since quicker) 
         [HttpPatch("{pointofinterestid}")]
-        public ActionResult PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDto> patchDocument)
+        public async Task<ActionResult> PartiallyUpdatePointOfInterest(int cityId, int pointOfInterestId, JsonPatchDocument<PointOfInterestForUpdateDto> patchDocument)
         {
+            if (!await _cityInfoRepository.CityExistsAsync(cityId))
+            {
+                return NotFound();
+            };
+
+            // 1. Find POI entity
+            var PoiEntity = await _cityInfoRepository.GetPointOfInterestForCityAsync(cityId, pointOfInterestId);
+            if (PoiEntity == null)
+            {
+                return NotFound();
+            };
+
+            // 2. Map POI entity -> update-DTO (store mapped update-DTO in variable) 
+            var POIToPatch =  _mapper.Map<PointOfInterestForUpdateDto>(PoiEntity);
+
+        
+            // 3. Apply the "Patch" to the POI_Patch object (allows you to manipulate objects (adding/removing properties) during runtime)
+            // ModelState = check for errors 
+            patchDocument.ApplyTo(POIToPatch, ModelState);
+
+            // 4. Check if POI_Patch valid before applying patchDoc
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // 5. Check if POI_Patch valid after applying patchDoc
+            if (!TryValidateModel(POIToPatch))
+            {
+                return BadRequest(ModelState);
+
+            }
+
+            // 6. Map changes back to entity
+            _mapper.Map(POIToPatch, PoiEntity);
+
+            // 7. Save changes
+            await _cityInfoRepository.SaveChangesAsync();
+
+            return NoContent(); 
+
+
+            /*
+             
             var city = _citiesDataStore.Cities.FirstOrDefault(city => city.Id == cityId);
             if (city == null) { return NotFound(); }
 
@@ -271,8 +315,12 @@ namespace Cities.API.Controllers
             POI.Description = POI_Patch.Description;
 
             return NoContent();
+            
+             */
 
         }
+
+        /*
 
         [HttpDelete("{pointOfInterestId}")]
         public ActionResult DeletePointOfInterest(int cityId, int pointOfInterestId)
