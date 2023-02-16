@@ -16,6 +16,7 @@ namespace Cities.API.Controllers
     {
         private readonly ICityInfoRepository _cityInfoRepository;
         private readonly IMapper _mapper;
+        const int maxCitiesPageSize = 20;
 
         // Dependency injected repository (i.e. 1. Created parameter, 2. Mapped parameter to corresponding class field) 
         public CitiesController(ICityInfoRepository cityInfoRepository, IMapper mapper)
@@ -30,11 +31,19 @@ namespace Cities.API.Controllers
         [HttpGet]
         // Want to return everything in JSON format 
         // Create constructor that returns JSON-ified data
-        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities( [FromQuery]string? name) { // name param = bound to query string (allows user to filter base on name) 
+        // name param = bound to query string (allows user to filter base on name) 
+        // searchQuery param = used for searching 
+        // pageNumber/pageSize = used for paging 
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities( [FromQuery]string? name, string? searchQuery, int pageNumber = 1, int pageSize= 10) 
+        { 
+            if (pageSize > maxCitiesPageSize)
+            {
+                pageSize = maxCitiesPageSize;   
+            }
 
 
             //cityEntities = used by repository + context
-            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name);
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
 
             //cityDto = used by API (therfore, use mapper to map: city enitity ("source object") -> city w/out POI Dto ("destination object") 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));

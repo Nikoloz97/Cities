@@ -24,7 +24,7 @@ namespace Cities.API.DBContexts
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
-            // Pass in mock data ("seeding DB")
+            // HasData = passes in mock data ("seeding DB")
             modelBuilder.Entity<City>()
                 .HasData(
                new City("New York City")

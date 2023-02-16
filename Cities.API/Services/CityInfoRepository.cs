@@ -25,15 +25,30 @@ namespace Cities.API.Services
         // Overload of GetCitiesAsync
         // Used for filtering based on city name (which is bound to query string param)
 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name)
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
-            if (string.IsNullOrEmpty(name))
+
+            // "Cast" DBSet -> IQueryable <City> (allows us to use linq clauses like where, etc.) 
+            // Known as "deferred execution" (aka we're "building up" the query, and only sending to database once we call ToListAsync below) 
+            var collection = this.context.Cities as IQueryable<City>;
+
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                return await GetCitiesAsync();
+                name = name.Trim();
+                collection = collection.Where(c => c.Name == name);
             }
 
-            name = name.Trim();
-            return await this.context.Cities.Where(c => c.Name == name).OrderBy(c => c.Name).ToListAsync();
+            // Remember, searches = more broad than filter
+            if (!string.IsNullOrEmpty(searchQuery))
+            {
+                searchQuery = searchQuery.Trim();
+                collection = collection.Where(a => a.Name.Contains(searchQuery) || (a.Description != null && a.Description.Contains(searchQuery)));
+            }
+
+            // Adding paging functionality last = good practice (otherwise query executes on the individual page data rather than whole thing) 
+            // Skip = e.g. request page 2 -> skips content from page 1 (if request page 1, doesn't skip anything) 
+            return await collection.OrderBy(c => c.Name).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
         }
 
         public async Task<City?> GetCityAsync(int cityId, bool includePOI)
