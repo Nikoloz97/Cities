@@ -20,8 +20,7 @@ namespace Cities.API.Entities
         public string? Description { get; set; }
 
         // Initialize to empty list to avoid null reference exception
-        public ICollection<PointOfInterest> PointsOfInterest { get; set; } 
-            = new List<PointOfInterest>();
+        public ICollection<PointOfInterest> PointsOfInterest { get; set; } = new List<PointOfInterest>();
 
         // Makes the name non-nullable 
         // Conveys a message to other developers (i.e. city class should ALWAYS have a name) 

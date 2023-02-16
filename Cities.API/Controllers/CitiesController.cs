@@ -30,11 +30,11 @@ namespace Cities.API.Controllers
         [HttpGet]
         // Want to return everything in JSON format 
         // Create constructor that returns JSON-ified data
-        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities() {
+        public async Task<ActionResult<IEnumerable<CityWithoutPointsOfInterestDto>>> GetCities( [FromQuery]string? name) { // name param = bound to query string (allows user to filter base on name) 
 
 
             //cityEntities = used by repository + context
-            var cityEntities = await _cityInfoRepository.GetCitiesAsync();
+            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name);
 
             //cityDto = used by API (therfore, use mapper to map: city enitity ("source object") -> city w/out POI Dto ("destination object") 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));

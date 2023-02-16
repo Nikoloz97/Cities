@@ -22,6 +22,20 @@ namespace Cities.API.Services
             return await this.context.Cities.OrderBy(c => c.Name).ToListAsync();
         }
 
+        // Overload of GetCitiesAsync
+        // Used for filtering based on city name (which is bound to query string param)
+
+        public async Task<IEnumerable<City>> GetCitiesAsync(string? name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return await GetCitiesAsync();
+            }
+
+            name = name.Trim();
+            return await this.context.Cities.Where(c => c.Name == name).OrderBy(c => c.Name).ToListAsync();
+        }
+
         public async Task<City?> GetCityAsync(int cityId, bool includePOI)
         {
             if (includePOI)
