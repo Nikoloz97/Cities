@@ -24,8 +24,9 @@ namespace Cities.API.Services
 
         // Overload of GetCitiesAsync
         // Used for filtering based on city name (which is bound to query string param)
+        // Returning IEnumerable City AND pagination = "tuple" 
 
-        public async Task<IEnumerable<City>> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
+        public async Task<(IEnumerable<City>, PaginationMetadata)> GetCitiesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
 
             // "Cast" DBSet -> IQueryable <City> (allows us to use linq clauses like where, etc.) 
@@ -38,16 +39,24 @@ namespace Cities.API.Services
                 collection = collection.Where(c => c.Name == name);
             }
 
-            // Remember, searches = more broad than filter
+            // Searches = more broad than filter
             if (!string.IsNullOrEmpty(searchQuery))
             {
                 searchQuery = searchQuery.Trim();
                 collection = collection.Where(a => a.Name.Contains(searchQuery) || (a.Description != null && a.Description.Contains(searchQuery)));
             }
 
+            var totalItemCount = await collection.CountAsync();
+
+            var paginationMetadata = new PaginationMetadata(totalItemCount, pageSize, pageNumber);
+
+
             // Adding paging functionality last = good practice (otherwise query executes on the individual page data rather than whole thing) 
             // Skip = e.g. request page 2 -> skips content from page 1 (if request page 1, doesn't skip anything) 
-            return await collection.OrderBy(c => c.Name).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+            var collectionToReturn =  await collection.OrderBy(c => c.Name).Skip(pageSize * (pageNumber - 1)).Take(pageSize).ToListAsync();
+
+            // Return a "tuple" 
+            return (collectionToReturn, paginationMetadata);
 
         }
 

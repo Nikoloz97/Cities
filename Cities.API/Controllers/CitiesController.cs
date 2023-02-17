@@ -2,6 +2,7 @@
 using Cities.API.Models;
 using Cities.API.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace Cities.API.Controllers
 {
@@ -42,8 +43,14 @@ namespace Cities.API.Controllers
             }
 
 
-            //cityEntities = used by repository + context
-            var cityEntities = await _cityInfoRepository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
+            // cityEntities = used by repository + context
+            // GetCitiesAsync = returns a "tuple" (i.e. 2 variables instead of 1) 
+            var (cityEntities, paginationMetadata) = await _cityInfoRepository.GetCitiesAsync(name, searchQuery, pageNumber, pageSize);
+
+            // Add pagination data to response as a header
+            Response.Headers.Add("X-Pagination", JsonSerializer.Serialize(paginationMetadata));
+
+
 
             //cityDto = used by API (therfore, use mapper to map: city enitity ("source object") -> city w/out POI Dto ("destination object") 
             return Ok(_mapper.Map<IEnumerable<CityWithoutPointsOfInterestDto>>(cityEntities));
